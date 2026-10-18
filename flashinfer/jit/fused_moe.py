@@ -258,6 +258,9 @@ def gen_trtllm_gen_fused_moe_sm100_module(enable_rubin: bool = False) -> JitSpec
         else CheckSumHash.TRTLLM_GEN_BMM
     )
     module_name = "fused_moe_trtllm_sm107" if enable_rubin else "fused_moe_trtllm_sm100"
+    # Keep the 0.6.17 cubin version, but never load its unmodified AOT launcher
+    # in place of this backport's BF16 allocation fix.
+    module_name += "_bf16_tma128k"
     rubin_flags = ["-DTLLM_RUBIN_FEATURES"] if enable_rubin else []
     include_path = f"{bmm_path}/include"
     header_name = "flashinferMetaInfo"
